@@ -4,8 +4,6 @@ import sys  # In order to terminate the program
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 # Prepare a sever socket
-# Fill in start
-# Fill in end
 serverPort = 80
 serverSocket.bind(("", serverPort))
 serverSocket.listen(1)
@@ -21,9 +19,10 @@ while True:
 
         # Send one HTTP header line into socket
         connectionSocket.send("HTTP/1.1 200 OK\nContent-Type: text/html\r\n\r\n".encode())
-        print("HTTP/1.1 200 OK")
+        print("Response: HTTP/1.1 200 OK")
+        print("File Data: \n\n", outputdata, "\n")
 
-        # Send the content of the requested file to the client
+         # Send the content of the requested file to the client
         for i in range(0, len(outputdata)):
             connectionSocket.send(outputdata[i].encode())
         connectionSocket.send("\r\n".encode())
@@ -31,7 +30,7 @@ while True:
 
     except IOError:
         # Send a 404 Not Found HTTP response message to the client
-        print("HTTP/1.1 404 Not Found")
+        print("Response: HTTP/1.1 404 Not Found")
         connectionSocket.send("HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n".encode())
         connectionSocket.send("<html><body><h1>404 Not Found</h1></body></html>".encode())
 
