@@ -8,6 +8,12 @@ serverPort = 80
 serverSocket.bind(("", serverPort))
 serverSocket.listen(1)
 
+def response_status(code):
+    if code == 200:
+        return "HTTP/1.1 200 OK"
+    elif code == 404:
+        return "HTTP/1.1 404 Not Found"
+
 while True:
     print("ready to serve...")
     connectionSocket, addr = serverSocket.accept()
@@ -19,7 +25,7 @@ while True:
 
         # Send one HTTP header line into socket
         connectionSocket.send("HTTP/1.1 200 OK\nContent-Type: text/html\r\n\r\n".encode())
-        print("Response: HTTP/1.1 200 OK")
+        print("Response:", response_status(200))
         print("File Data: \n\n", outputdata, "\n")
 
          # Send the content of the requested file to the client
@@ -30,7 +36,7 @@ while True:
 
     except IOError:
         # Send a 404 Not Found HTTP response message to the client
-        print("Response: HTTP/1.1 404 Not Found")
+        print("Response:", , response_status(404))
         connectionSocket.send("HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n".encode())
         connectionSocket.send("<html><body><h1>404 Not Found</h1></body></html>".encode())
 
