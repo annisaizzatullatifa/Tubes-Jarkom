@@ -4,8 +4,9 @@ import sys  # In order to terminate the program
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 # Prepare a sever socket
-serverPort = 80
-serverSocket.bind(("", serverPort))
+serverAddress = "localhost"
+serverPort = 1805
+serverSocket.bind((serverAddress, serverPort))
 serverSocket.listen(1)
 
 def response_status(code):
@@ -20,17 +21,19 @@ while True:
     try:
         message = connectionSocket.recv(1024).decode()
         filename = message.split()[1]
-        f = open(filename[1:])
-        outputdata = f.read()
+
+        # Extract the path from the filename by removing the leading '/'
+        filepath = filename[1:]
+
+        with open(filepath, 'rb') as f:
+            outputdata = f.read()
 
         # Send one HTTP header line into socket
         connectionSocket.send("HTTP/1.1 200 OK\nContent-Type: text/html\r\n\r\n".encode())
         print("Response:", response_status(200))
-        print("File Data: \n\n", outputdata, "\n")
 
          # Send the content of the requested file to the client
-        for i in range(0, len(outputdata)):
-            connectionSocket.send(outputdata[i].encode())
+        connectionSocket.sendall(outputdata)
         connectionSocket.send("\r\n".encode())
         connectionSocket.close()
 
@@ -42,5 +45,6 @@ while True:
 
         # Close the client connection socket
         connectionSocket.close()
+        
 serverSocket.close()
 sys.exit()
