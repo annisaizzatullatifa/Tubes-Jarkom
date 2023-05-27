@@ -36,7 +36,7 @@ while True:
 
     except IOError:
         # Send a 404 Not Found HTTP response message to the client
-        print("Response:", , response_status(404))
+        print("Response:", response_status(404))
         connectionSocket.send("HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n".encode())
         connectionSocket.send("<html><body><h1>404 Not Found</h1></body></html>".encode())
 
